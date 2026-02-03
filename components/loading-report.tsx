@@ -20,6 +20,15 @@ export function LoadingReport({ onComplete }: LoadingReportProps) {
   const [waitingForServer, setWaitingForServer] = useState(false);
   const hasCalledComplete = useRef(false);
 
+  // Al montar, resetear el estado del servidor para este flujo (evita que quede "finish" de una sesión anterior)
+  useEffect(() => {
+    fetch("/api/ui-state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state: "waiting" }),
+    }).catch(() => {});
+  }, []);
+
   // Animación de pasos visuales
   useEffect(() => {
     const interval = setInterval(() => {
